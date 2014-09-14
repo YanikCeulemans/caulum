@@ -9,39 +9,39 @@ import java.util.Date;
  */
 public class Forecast implements Serializable{
 
-    private final Coords coords;
+    private final Coords location;
     private final SunCycle sunCycle;
-    private final Weather[] weather;
-    private final WeatherNumbers weatherNumbers;
+    private final Weather weather;
+    private final TemperatureForecast temperatureForecast;
     private final Date requestDate;
 
     public Forecast
-            (Coords coords,
+            (Coords location,
              SunCycle sunCycle,
-             Weather[] weather,
-             WeatherNumbers weatherNumbers,
+             Weather weather,
+             TemperatureForecast temperatureForecast,
              long requestDate) {
-        this.coords = coords;
+        this.location = location;
         this.sunCycle = sunCycle;
         this.weather = weather;
-        this.weatherNumbers = weatherNumbers;
+        this.temperatureForecast = temperatureForecast;
         this.requestDate = new Date(requestDate * 1000);
     }
 
-    public Coords getCoords() {
-        return coords;
+    public Coords getLocation() {
+        return location;
     }
 
     public SunCycle getSunCycle() {
         return sunCycle;
     }
 
-    public Weather[] getWeather() {
+    public Weather getWeather() {
         return weather;
     }
 
-    public WeatherNumbers getWeatherNumbers() {
-        return weatherNumbers;
+    public TemperatureForecast getTemperatureForecast() {
+        return temperatureForecast;
     }
 
     public Date getRequestDate() {
@@ -51,10 +51,10 @@ public class Forecast implements Serializable{
     @Override
     public String toString() {
         return "Forecast{" +
-                "coords=" + coords +
+                "location=" + location +
                 ", sunCycle=" + sunCycle +
-                ", weather=" + Arrays.toString(weather) +
-                ", weatherNumbers=" + weatherNumbers +
+                ", weather=" + weather +
+                ", temperatureForecast=" + temperatureForecast +
                 ", requestDate=" + requestDate +
                 '}';
     }

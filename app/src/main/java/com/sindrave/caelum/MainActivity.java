@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 
@@ -104,8 +102,8 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             forecast = (Forecast) intent.getSerializableExtra(EXTRA_FORECAST);
-            setCurrentTemperature(forecast.getWeatherNumbers().getCurrentTemperature());
-            setCurrentWeatherDescription(forecast.getWeather()[0].getCurrentWeatherDescription());
+            setCurrentTemperature(forecast.getTemperatureForecast().getCurrentTemperature());
+            setCurrentWeatherDescription(forecast.getWeather().getCurrentWeatherDescription());
         }
     }
 }
