@@ -16,7 +16,7 @@ import java.net.URL;
  * Created by Yanik on 15/08/2014.
  */
 public class WeatherApi {
-    private final static String OPEN_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric";
+    private final static String OPEN_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s";
     public static final int HTTP_OK_RESPONSE_CODE = 200;
 
     private JSONObject getForecastDataForCity(String city) {
@@ -29,6 +29,7 @@ public class WeatherApi {
                 json.append(bufferedJson).append("\n");
             }
             reader.close();
+            Log.d(WeatherApi.class.getName(), "Retrieved JSON String: " + json);
             JSONObject data = new JSONObject(json.toString());
 
             if (data.getInt("cod") != HTTP_OK_RESPONSE_CODE) {

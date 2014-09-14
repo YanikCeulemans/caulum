@@ -102,7 +102,8 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             forecast = (Forecast) intent.getSerializableExtra(EXTRA_FORECAST);
-            setCurrentTemperature(forecast.getTemperatureForecast().getCurrentTemperature());
+            float currentTemperature = forecast.getTemperatureForecast().getCurrentTemperature();
+            setCurrentTemperature(currentTemperature);
             setCurrentWeatherDescription(forecast.getWeather().getCurrentWeatherDescription());
         }
     }

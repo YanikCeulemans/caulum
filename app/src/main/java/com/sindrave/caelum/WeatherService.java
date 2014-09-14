@@ -73,7 +73,11 @@ public class WeatherService extends IntentService {
             Intent forecastIntent = new Intent();
             forecastIntent.setAction(MainActivity.ForecastReceiver.ACTION_FORECAST_RESOLVED);
             forecastIntent.putExtra(MainActivity.ForecastReceiver.EXTRA_FORECAST, result);
-            sendBroadcast(forecastIntent);
+            try {
+                sendBroadcast(forecastIntent);
+            } catch (Exception e) {
+                Log.e(WeatherService.class.getName(), "Error occurred trying to send broadcast intent (Most likely serialization issues)");
+            }
         }else{
             Log.e(WeatherService.class.getName(), "Could not parse JSON response");
         }

@@ -1,9 +1,11 @@
 package com.sindrave.caelum;
 
+import java.io.Serializable;
+
 /**
  * Created by Yanik on 14/09/2014.
  */
-public class TemperatureForecast {
+public class TemperatureForecast implements Serializable {
     /**
      * Unit: Kelvin
      */
