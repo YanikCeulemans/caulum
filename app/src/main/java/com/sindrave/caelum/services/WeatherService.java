@@ -1,9 +1,13 @@
-package com.sindrave.caelum;
+package com.sindrave.caelum.services;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
+
+import com.sindrave.caelum.MainActivity;
+import com.sindrave.caelum.api.WeatherApi;
+import com.sindrave.caelum.domain.Forecast;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in

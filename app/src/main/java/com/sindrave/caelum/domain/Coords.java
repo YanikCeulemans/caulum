@@ -1,4 +1,4 @@
-package com.sindrave.caelum;
+package com.sindrave.caelum.domain;
 
 import java.io.Serializable;
 

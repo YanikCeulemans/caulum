@@ -1,6 +1,8 @@
-package com.sindrave.caelum;
+package com.sindrave.caelum.api;
 
 import android.util.Log;
+
+import com.sindrave.caelum.domain.Forecast;
 
 import org.json.JSONException;
 import org.json.JSONObject;

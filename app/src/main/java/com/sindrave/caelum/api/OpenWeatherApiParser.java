@@ -1,6 +1,12 @@
-package com.sindrave.caelum;
+package com.sindrave.caelum.api;
 
 import android.util.Log;
+
+import com.sindrave.caelum.domain.Coords;
+import com.sindrave.caelum.domain.Forecast;
+import com.sindrave.caelum.domain.SunCycle;
+import com.sindrave.caelum.domain.TemperatureForecast;
+import com.sindrave.caelum.domain.Weather;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,7 +1,6 @@
-package com.sindrave.caelum;
+package com.sindrave.caelum.domain;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 /**

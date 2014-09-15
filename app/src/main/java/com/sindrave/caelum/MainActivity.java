@@ -11,6 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.sindrave.caelum.domain.Forecast;
+import com.sindrave.caelum.services.WeatherService;
+
 
 public class MainActivity extends Activity {
 

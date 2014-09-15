@@ -20,7 +20,7 @@
         </activity>
 
         <service
-            android:name=".WeatherService"
+            android:name=".services.WeatherService"
             android:exported="false" >
         </service>
 
