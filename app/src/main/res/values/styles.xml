@@ -21,4 +21,8 @@
     <style name="WhiteText.Large">
         <item name="android:textSize">35sp</item>
     </style>
+
+    <style name="WhiteText.WeatherIcon">
+        <item name="android:textSize">90sp</item>
+    </style>
 </resources>

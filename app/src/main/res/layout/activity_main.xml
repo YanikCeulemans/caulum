@@ -49,21 +49,29 @@
 
     </RelativeLayout>
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageViewCurrentWeatherIcon"
         android:src="@drawable/clouded_icon"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp" />
+        android:layout_marginTop="70dp" />-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCurrentWeatherIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:text="@string/weather_icon_clear"
+        style="@style/WhiteText.WeatherIcon"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="22°"
         android:id="@+id/textViewCurrentTemperature"
-        android:layout_toRightOf="@+id/imageViewCurrentWeatherIcon"
-        android:layout_alignTop="@+id/imageViewCurrentWeatherIcon"
+        android:layout_toRightOf="@+id/textViewCurrentWeatherIcon"
+        android:layout_alignTop="@+id/textViewCurrentWeatherIcon"
         android:layout_marginTop="10dp"
         style="@style/WhiteText.Large"/>
 
@@ -72,7 +80,7 @@
         android:layout_height="wrap_content"
         android:text="Sunny day"
         android:id="@+id/textViewCurrentWeatherDescription"
-        android:layout_below="@+id/imageViewCurrentWeatherIcon"
+        android:layout_below="@+id/textViewCurrentWeatherIcon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         style="@style/WhiteText.Large"/>

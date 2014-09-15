@@ -37,7 +37,7 @@ public class OpenWeatherApiParser {
 
     private static Weather getWeatherFromJson(JSONObject data, JSONObject mainJsonObject) throws JSONException {
         JSONObject firstWeatherJsonObject = (JSONObject) data.getJSONArray("weather").get(0);
-        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getString("description"),firstWeatherJsonObject.getString("description"));
+        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getInt("id"), firstWeatherJsonObject.getString("description"),firstWeatherJsonObject.getString("description"));
     }
 
     private static SunCycle getSunCycleFromJson(JSONObject data) throws JSONException {

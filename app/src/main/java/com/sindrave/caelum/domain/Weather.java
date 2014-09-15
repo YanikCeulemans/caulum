@@ -7,12 +7,13 @@ import java.io.Serializable;
  */
 public class Weather implements Serializable {
 
-    private final int pressure, humidity;
+    private final int pressure, humidity, icon;
     private final String shortCurrentWeatherDescription, currentWeatherDescription;
 
-    public Weather(int pressure, int humidity, String shortCurrentWeatherDescription, String currentWeatherDescription) {
+    public Weather(int pressure, int humidity, int icon, String shortCurrentWeatherDescription, String currentWeatherDescription) {
         this.pressure = pressure;
         this.humidity = humidity;
+        this.icon = icon;
         this.shortCurrentWeatherDescription = shortCurrentWeatherDescription;
         this.currentWeatherDescription = currentWeatherDescription;
     }
@@ -33,11 +34,16 @@ public class Weather implements Serializable {
         return humidity;
     }
 
+    public int getIcon() {
+        return icon;
+    }
+
     @Override
     public String toString() {
         return "Weather{" +
                 "pressure=" + pressure +
                 ", humidity=" + humidity +
+                ", icon=" + icon +
                 ", shortCurrentWeatherDescription='" + shortCurrentWeatherDescription + '\'' +
                 ", currentWeatherDescription='" + currentWeatherDescription + '\'' +
                 '}';

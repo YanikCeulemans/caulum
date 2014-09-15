@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="weather_icon_thunder">&#xf01e;</string>
+    <string name="weather_icon_clear">&#xf00d;</string>
+    <string name="weather_icon_foggy">&#xf014;</string>
+    <string name="weather_icon_rainy">&#xf019;</string>
+    <string name="weather_icon_cloudy">&#xf013;</string>
+    <string name="weather_icon_snowy">&#xf01b;</string>
+    <string name="weather_icon_drizzle">&#xf01c;</string>
+</resources>
