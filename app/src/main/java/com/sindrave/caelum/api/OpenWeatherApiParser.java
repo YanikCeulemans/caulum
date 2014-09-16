@@ -19,16 +19,21 @@ public class OpenWeatherApiParser {
     public static Forecast parseForecastFromJson(JSONObject data) {
         try {
             Coords location = getLocationFromJson(data);
+            String locationName = getLocationNameFromJson(data);
             SunCycle sunCycle = getSunCycleFromJson(data);
             JSONObject mainJsonObject = data.getJSONObject("main");
             Weather weather = getWeatherFromJson(data, mainJsonObject);
             TemperatureForecast tempForecast = getTemperatureForecastFromJson(mainJsonObject);
             long date = data.getLong("dt");
-            return new Forecast(location, sunCycle, weather, tempForecast, date);
+            return new Forecast(location, locationName, sunCycle, weather, tempForecast, date);
         } catch (JSONException e) {
             Log.e(OpenWeatherApiParser.class.getName(), "Error occurred while parsing JSON", e);
             return null;
         }
+    }
+
+    private static String getLocationNameFromJson(JSONObject data) throws JSONException {
+        return data.getString("name");
     }
 
     private static TemperatureForecast getTemperatureForecastFromJson(JSONObject mainJsonObject) throws JSONException {
@@ -37,7 +42,7 @@ public class OpenWeatherApiParser {
 
     private static Weather getWeatherFromJson(JSONObject data, JSONObject mainJsonObject) throws JSONException {
         JSONObject firstWeatherJsonObject = (JSONObject) data.getJSONArray("weather").get(0);
-        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getInt("id"), firstWeatherJsonObject.getString("description"),firstWeatherJsonObject.getString("description"));
+        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getInt("id"), firstWeatherJsonObject.getString("main"),firstWeatherJsonObject.getString("description"));
     }
 
     private static SunCycle getSunCycleFromJson(JSONObject data) throws JSONException {

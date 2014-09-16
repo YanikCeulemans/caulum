@@ -10,12 +10,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.sindrave.caelum.domain.Forecast;
 import com.sindrave.caelum.helpers.CelciusConverter;
 import com.sindrave.caelum.helpers.UnitConverter;
 import com.sindrave.caelum.services.WeatherService;
+import com.sindrave.caelum.settings.CitySetting;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MainActivity extends Activity {
@@ -23,6 +28,10 @@ public class MainActivity extends Activity {
     private TextView textViewCurrentTemperature,textViewCurrentWeatherDescription, textViewWeatherIcon;
     private ForecastReceiver receiver;
     private UnitConverter unitConverter;
+    private CitySetting citySetting;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +42,8 @@ public class MainActivity extends Activity {
         getTextViewWeatherIcon().setTypeface(weatherTypeFace);
 
         unitConverter = new CelciusConverter();
+        citySetting = new CitySetting(this);
+        WeatherService.startActionCurrentWeather(this, citySetting.getCity());
     }
 
     @Override
@@ -53,7 +64,7 @@ public class MainActivity extends Activity {
             case R.id.action_settings:
                 return true;
             case R.id.action_refresh:
-                WeatherService.startActionCurrentWeather(this, "Kapellen");
+                WeatherService.startActionCurrentWeather(this, citySetting.getCity());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -142,6 +153,17 @@ public class MainActivity extends Activity {
         getTextViewWeatherIcon().setText(icon);
     }
 
+    private void setRequestDate(Date date) {
+        TextView textViewDate = (TextView) findViewById(R.id.textViewDate);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMMM yyyy");
+        textViewDate.setText(dateFormatter.format(date));
+    }
+
+    private void setLocation(String city) {
+        TextView textViewLocation = (TextView) findViewById(R.id.textviewLocationName);
+        textViewLocation.setText(city);
+    }
+
     public class ForecastReceiver extends BroadcastReceiver {
         public static final String EXTRA_FORECAST = "com.sindrave.extras.FORECAST";
         public static final String ACTION_FORECAST_RESOLVED = "com.sindrave.action.FORECAST_RESOLVED";
@@ -156,8 +178,10 @@ public class MainActivity extends Activity {
             forecast = (Forecast) intent.getSerializableExtra(EXTRA_FORECAST);
             float currentTemperature = forecast.getTemperatureForecast().getCurrentTemperature();
             setCurrentTemperature(currentTemperature);
-            setCurrentWeatherDescription(forecast.getWeather().getCurrentWeatherDescription());
+            setCurrentWeatherDescription(forecast.getWeather().getShortCurrentWeatherDescription());
             setWeatherIcon(forecast.getWeather().getIcon());
+            setRequestDate(forecast.getRequestDate());
+            setLocation(forecast.getLocationName());
         }
     }
 }
