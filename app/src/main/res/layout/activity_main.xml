@@ -53,7 +53,7 @@
     <com.sindrave.caelum.views.WeatherIconView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewCurrentWeatherIcon"
+        android:id="@+id/weatherIconViewCurrentWeatherIcon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         style="@style/WhiteText.WeatherIcon" />
@@ -63,8 +63,8 @@
         android:layout_height="wrap_content"
         tools:text="22°C"
         android:id="@+id/textViewCurrentTemperature"
-        android:layout_toRightOf="@+id/textViewCurrentWeatherIcon"
-        android:layout_alignTop="@+id/textViewCurrentWeatherIcon"
+        android:layout_toRightOf="@+id/weatherIconViewCurrentWeatherIcon"
+        android:layout_alignTop="@+id/weatherIconViewCurrentWeatherIcon"
         android:layout_marginTop="10dp"
         style="@style/WhiteText.Large"/>
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         tools:text="Sunny day"
         android:id="@+id/textViewCurrentWeatherDescription"
-        android:layout_below="@+id/textViewCurrentWeatherIcon"
+        android:layout_below="@+id/weatherIconViewCurrentWeatherIcon"
         android:layout_centerHorizontal="true"
         style="@style/WhiteText.Large"/>
 

@@ -7,15 +7,16 @@ import java.io.Serializable;
  */
 public class Weather implements Serializable {
 
-    private final int pressure, humidity, icon;
+    private final int pressure, humidity;
     private final String shortCurrentWeatherDescription, currentWeatherDescription;
+    private final WeatherType weatherType;
 
-    public Weather(int pressure, int humidity, int icon, String shortCurrentWeatherDescription, String currentWeatherDescription) {
+    public Weather(int pressure, int humidity, String shortCurrentWeatherDescription, String currentWeatherDescription, WeatherType weatherType) {
         this.pressure = pressure;
         this.humidity = humidity;
-        this.icon = icon;
         this.shortCurrentWeatherDescription = shortCurrentWeatherDescription;
         this.currentWeatherDescription = currentWeatherDescription;
+        this.weatherType = weatherType;
     }
 
     public String getShortCurrentWeatherDescription() {
@@ -34,8 +35,8 @@ public class Weather implements Serializable {
         return humidity;
     }
 
-    public int getIcon() {
-        return icon;
+    public WeatherType getWeatherType() {
+        return weatherType;
     }
 
     @Override
@@ -43,9 +44,9 @@ public class Weather implements Serializable {
         return "Weather{" +
                 "pressure=" + pressure +
                 ", humidity=" + humidity +
-                ", icon=" + icon +
                 ", shortCurrentWeatherDescription='" + shortCurrentWeatherDescription + '\'' +
                 ", currentWeatherDescription='" + currentWeatherDescription + '\'' +
+                ", weatherType=" + weatherType +
                 '}';
     }
 }

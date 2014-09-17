@@ -7,25 +7,25 @@ import java.io.Serializable;
  */
 public class TemperatureForecast implements Serializable {
     /**
-     * Unit: Kelvin
+     * Unit: KELVIN
      */
-    private final float currentTemperature, minimumTemperature, maximumTemperature;
+    private final Temperature currentTemperature, minimumTemperature, maximumTemperature;
 
     public TemperatureForecast(float currentTemperature, float minimumTemperature, float maximumTemperature) {
-        this.currentTemperature = currentTemperature;
-        this.minimumTemperature = minimumTemperature;
-        this.maximumTemperature = maximumTemperature;
+        this.currentTemperature = new Temperature(currentTemperature);
+        this.minimumTemperature = new Temperature(minimumTemperature);
+        this.maximumTemperature = new Temperature(maximumTemperature);
     }
 
-    public float getCurrentTemperature() {
+    public Temperature getCurrentTemperature() {
         return currentTemperature;
     }
 
-    public float getMinimumTemperature() {
+    public Temperature getMinimumTemperature() {
         return minimumTemperature;
     }
 
-    public float getMaximumTemperature() {
+    public Temperature getMaximumTemperature() {
         return maximumTemperature;
     }
 

@@ -5,19 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.sindrave.caelum.domain.Forecast;
-import com.sindrave.caelum.helpers.CelciusConverter;
-import com.sindrave.caelum.helpers.UnitConverter;
+import com.sindrave.caelum.domain.Temperature;
+import com.sindrave.caelum.domain.WeatherType;
 import com.sindrave.caelum.services.WeatherService;
 import com.sindrave.caelum.settings.CitySetting;
+import com.sindrave.caelum.settings.TemperatureUnitSetting;
+import com.sindrave.caelum.views.WeatherIconView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,24 +25,20 @@ import java.util.Date;
 
 public class MainActivity extends Activity {
 
-    private TextView textViewCurrentTemperature,textViewCurrentWeatherDescription, textViewWeatherIcon;
+    private TextView textViewCurrentTemperature,textViewCurrentWeatherDescription;
     private ForecastReceiver receiver;
-    private UnitConverter unitConverter;
     private CitySetting citySetting;
-
-
-
+    private TemperatureUnitSetting temperatureUnitSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Typeface weatherTypeFace = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
-        getTextViewWeatherIcon().setTypeface(weatherTypeFace);
-
-        unitConverter = new CelciusConverter();
         citySetting = new CitySetting(this);
+        temperatureUnitSetting = new TemperatureUnitSetting(this);
+
+        Temperature.setUnit(temperatureUnitSetting.getTemperatureUnit());
         WeatherService.startActionCurrentWeather(this, citySetting.getCity());
     }
 
@@ -99,16 +95,9 @@ public class MainActivity extends Activity {
         return textViewCurrentWeatherDescription;
     }
 
-    public TextView getTextViewWeatherIcon() {
-        if (textViewWeatherIcon == null) {
-            textViewWeatherIcon = (TextView) findViewById(R.id.textViewCurrentWeatherIcon);
-        }
-        return textViewWeatherIcon;
-    }
-
-    private void setCurrentTemperature(float currentTemperature) {
-        int currentTemperatureInUnit = unitConverter.convertToInt(currentTemperature);
-        getTextViewCurrentTemperature().setText(String.format("%d°C", currentTemperatureInUnit));
+    private void setCurrentTemperature(Temperature currentTemperature) {
+        int currentTemperatureInUnit = Math.round(currentTemperature.getTemperature());
+        getTextViewCurrentTemperature().setText(String.format("%d°C", currentTemperatureInUnit)); // TODO: get text from temperature object
     }
 
     private String capitalizeFirstCharacter(String string) {
@@ -119,38 +108,9 @@ public class MainActivity extends Activity {
         getTextViewCurrentWeatherDescription().setText(capitalizeFirstCharacter(description));
     }
 
-    private void setWeatherIcon(int code) {
-        String icon;
-        if (code == 800){
-            icon = getResources().getString(R.string.weather_icon_clear);
-        }else{
-            int firstDigit = code / 100;
-            switch (firstDigit) {
-                case 2:
-                    icon = getResources().getString(R.string.weather_icon_thunder);
-                    break;
-                case 3:
-                    icon = getResources().getString(R.string.weather_icon_drizzle);
-                    break;
-                case 7:
-                    icon = getResources().getString(R.string.weather_icon_foggy);
-                    break;
-                case 8:
-                    icon = getResources().getString(R.string.weather_icon_cloudy);
-                    break;
-                case 6:
-                    icon = getResources().getString(R.string.weather_icon_snowy);
-                    break;
-                case 5:
-                    icon = getResources().getString(R.string.weather_icon_rainy);
-                    break;
-                default:
-                    Log.e(MainActivity.class.getName(), "No weather icon found for icon code: " + code);
-                    icon = "";
-                    break;
-            }
-        }
-        getTextViewWeatherIcon().setText(icon);
+    private void setWeatherIcon(WeatherType weatherType) {
+        WeatherIconView weatherIconView = (WeatherIconView) findViewById(R.id.weatherIconViewCurrentWeatherIcon);
+        weatherIconView.setWeatherIcon(weatherType);
     }
 
     private void setRequestDate(Date date) {
@@ -176,10 +136,9 @@ public class MainActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             forecast = (Forecast) intent.getSerializableExtra(EXTRA_FORECAST);
-            float currentTemperature = forecast.getTemperatureForecast().getCurrentTemperature();
-            setCurrentTemperature(currentTemperature);
+            setCurrentTemperature(forecast.getTemperatureForecast().getCurrentTemperature());
             setCurrentWeatherDescription(forecast.getWeather().getShortCurrentWeatherDescription());
-            setWeatherIcon(forecast.getWeather().getIcon());
+            setWeatherIcon(forecast.getWeather().getWeatherType());
             setRequestDate(forecast.getRequestDate());
             setLocation(forecast.getLocationName());
         }

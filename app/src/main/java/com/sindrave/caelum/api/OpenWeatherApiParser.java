@@ -7,6 +7,7 @@ import com.sindrave.caelum.domain.Forecast;
 import com.sindrave.caelum.domain.SunCycle;
 import com.sindrave.caelum.domain.TemperatureForecast;
 import com.sindrave.caelum.domain.Weather;
+import com.sindrave.caelum.domain.WeatherType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,12 +38,38 @@ public class OpenWeatherApiParser {
     }
 
     private static TemperatureForecast getTemperatureForecastFromJson(JSONObject mainJsonObject) throws JSONException {
-        return new TemperatureForecast((float)mainJsonObject.getDouble("temp"), (float)mainJsonObject.getDouble("temp_min"), (float)mainJsonObject.getDouble("temp_max"));
+        return new TemperatureForecast((float) mainJsonObject.getDouble("temp"), (float) mainJsonObject.getDouble("temp_min"), (float) mainJsonObject.getDouble("temp_max"));
     }
 
     private static Weather getWeatherFromJson(JSONObject data, JSONObject mainJsonObject) throws JSONException {
         JSONObject firstWeatherJsonObject = (JSONObject) data.getJSONArray("weather").get(0);
-        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getInt("id"), firstWeatherJsonObject.getString("main"),firstWeatherJsonObject.getString("description"));
+        WeatherType weatherType = getWeatherType(firstWeatherJsonObject);
+        return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getString("main"), firstWeatherJsonObject.getString("description"), weatherType);
+    }
+
+    private static WeatherType getWeatherType(JSONObject firstWeatherJsonObject) throws JSONException {
+        int weatherConditionId = firstWeatherJsonObject.getInt("id");
+        if (weatherConditionId == 800) {
+            return WeatherType.CLEAR;
+        } else {
+            int firstDigit = weatherConditionId / 100;
+            switch (firstDigit) {
+                case 2:
+                    return WeatherType.THUNDER;
+                case 3:
+                    return WeatherType.DRIZZLE;
+                case 7:
+                    return WeatherType.FOGGY;
+                case 8:
+                    return WeatherType.CLOUDY;
+                case 6:
+                    return WeatherType.SNOWY;
+                case 5:
+                    return WeatherType.RAINY;
+                default:
+                    return WeatherType.UNKNOWN;
+            }
+        }
     }
 
     private static SunCycle getSunCycleFromJson(JSONObject data) throws JSONException {
@@ -52,6 +79,6 @@ public class OpenWeatherApiParser {
 
     private static Coords getLocationFromJson(JSONObject data) throws JSONException {
         JSONObject jsonCoords = data.getJSONObject("coord");
-        return new Coords((float)jsonCoords.getDouble("lon"), (float)jsonCoords.getDouble("lat"));
+        return new Coords((float) jsonCoords.getDouble("lon"), (float) jsonCoords.getDouble("lat"));
     }
 }
