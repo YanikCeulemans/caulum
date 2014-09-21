@@ -16,7 +16,7 @@ public class CitySetting {
     }
 
     public String getCity() {
-        return preferences.getString(PREFERENCE_CITY, "London");
+        return preferences.getString(PREFERENCE_CITY, "Kapellen");
     }
 
     public void setCity(String city) {

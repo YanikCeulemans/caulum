@@ -1,6 +1,7 @@
 package com.sindrave.caelum.domain;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 /**
  * Created by Yanik on 17/09/2014.
@@ -37,17 +38,41 @@ public class Temperature implements Serializable {
         Temperature.unit = unit;
     }
 
-    public float getTemperature() {
+    private String getTemperature() {
+        return getTemperature(0);
+    }
+
+    private String getTemperature(int precision) {
+        float convertedAmount;
         switch (unit) {
             case KELVIN:
-                return amount;
+                convertedAmount = amount;
+                break;
             case CELSIUS:
-                return getAmountInCelsius();
+                convertedAmount = getAmountInCelsius();
+                break;
             case FAHRENHEIT:
-                return getAmountInFarhenheit();
+                convertedAmount = getAmountInFarhenheit();
+                break;
             default:
                 throw new IllegalArgumentException("The unit value: " + unit + " does not exist.");
         }
+        DecimalFormat df = new DecimalFormat(getPrecisionFormatString(precision));
+        return df.format(convertedAmount);
+
+    }
+
+    private String getPrecisionFormatString(int precision) {
+        StringBuilder strb = new StringBuilder("#");
+        if (precision <= 0) {
+            return "";
+        } else {
+            strb.append(".");
+            for (int i = 0; i < precision; i++) {
+                strb.append("#");
+            }
+        }
+        return strb.toString();
     }
 
     private float getAmountInFarhenheit() {
@@ -68,7 +93,11 @@ public class Temperature implements Serializable {
 
     @Override
     public String toString() {
-        return Math.round(amount) + unit.getSymbol();
+        return getTemperature() + unit.getSymbol();
+    }
+
+    public String toString(int precision) {
+        return getTemperature(precision) + unit.getSymbol();
     }
 
     public enum Unit {

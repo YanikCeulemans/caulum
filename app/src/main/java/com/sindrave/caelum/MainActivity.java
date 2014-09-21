@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
     }
 
     private void setCurrentTemperature(Temperature currentTemperature) {
-        getTextViewCurrentTemperature().setText(currentTemperature.toString());
+        getTextViewCurrentTemperature().setText(currentTemperature.toString(1));
     }
 
     private String capitalizeFirstCharacter(String string) {
