@@ -5,6 +5,7 @@ import android.util.Log;
 import com.sindrave.caelum.domain.Coords;
 import com.sindrave.caelum.domain.Forecast;
 import com.sindrave.caelum.domain.SunCycle;
+import com.sindrave.caelum.domain.Temperature;
 import com.sindrave.caelum.domain.TemperatureForecast;
 import com.sindrave.caelum.domain.Weather;
 import com.sindrave.caelum.domain.WeatherType;
@@ -38,7 +39,10 @@ public class OpenWeatherApiParser {
     }
 
     private static TemperatureForecast getTemperatureForecastFromJson(JSONObject mainJsonObject) throws JSONException {
-        return new TemperatureForecast((float) mainJsonObject.getDouble("temp"), (float) mainJsonObject.getDouble("temp_min"), (float) mainJsonObject.getDouble("temp_max"));
+        Temperature currentTemperature = new Temperature((float) mainJsonObject.getDouble("temp"), Temperature.Unit.KELVIN);
+        Temperature minimumTemperature = new Temperature((float) mainJsonObject.getDouble("temp_min"), Temperature.Unit.KELVIN);
+        Temperature maximumTemperature = new Temperature((float) mainJsonObject.getDouble("temp_max"), Temperature.Unit.KELVIN);
+        return new TemperatureForecast(currentTemperature, minimumTemperature, maximumTemperature);
     }
 
     private static Weather getWeatherFromJson(JSONObject data, JSONObject mainJsonObject) throws JSONException {

@@ -11,10 +11,10 @@ public class TemperatureForecast implements Serializable {
      */
     private final Temperature currentTemperature, minimumTemperature, maximumTemperature;
 
-    public TemperatureForecast(float currentTemperature, float minimumTemperature, float maximumTemperature) {
-        this.currentTemperature = new Temperature(currentTemperature);
-        this.minimumTemperature = new Temperature(minimumTemperature);
-        this.maximumTemperature = new Temperature(maximumTemperature);
+    public TemperatureForecast(Temperature currentTemperature, Temperature minimumTemperature, Temperature maximumTemperature) {
+        this.currentTemperature = currentTemperature;
+        this.minimumTemperature = minimumTemperature;
+        this.maximumTemperature = maximumTemperature;
     }
 
     public Temperature getCurrentTemperature() {

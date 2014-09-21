@@ -44,16 +44,12 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         Log.i(MainActivity.class.getName(), "Thread id: " + Thread.currentThread().getId());
         int id = item.getItemId();
         switch (id) {
@@ -96,8 +92,7 @@ public class MainActivity extends Activity {
     }
 
     private void setCurrentTemperature(Temperature currentTemperature) {
-        int currentTemperatureInUnit = Math.round(currentTemperature.getTemperature());
-        getTextViewCurrentTemperature().setText(String.format("%d°C", currentTemperatureInUnit)); // TODO: get text from temperature object
+        getTextViewCurrentTemperature().setText(currentTemperature.toString());
     }
 
     private String capitalizeFirstCharacter(String string) {
