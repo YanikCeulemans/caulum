@@ -1,7 +1,8 @@
 package com.sindrave.caelum.domain;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 
 /**
  * Created by Yanik on 17/09/2014.
@@ -38,11 +39,7 @@ public class Temperature implements Serializable {
         Temperature.unit = unit;
     }
 
-    private String getTemperature() {
-        return getTemperature(0);
-    }
-
-    private String getTemperature(int precision) {
+    private String getTemperatureAmount(NumberFormat numberFormat) {
         float convertedAmount;
         switch (unit) {
             case KELVIN:
@@ -52,30 +49,23 @@ public class Temperature implements Serializable {
                 convertedAmount = getAmountInCelsius();
                 break;
             case FAHRENHEIT:
-                convertedAmount = getAmountInFarhenheit();
+                convertedAmount = getAmountInFahrenheit();
                 break;
             default:
                 throw new IllegalArgumentException("The unit value: " + unit + " does not exist.");
         }
-        DecimalFormat df = new DecimalFormat(getPrecisionFormatString(precision));
-        return df.format(convertedAmount);
-
+        return numberFormat.format(convertedAmount);
     }
 
-    private String getPrecisionFormatString(int precision) {
-        StringBuilder strb = new StringBuilder("#");
-        if (precision <= 0) {
-            return "";
-        } else {
-            strb.append(".");
-            for (int i = 0; i < precision; i++) {
-                strb.append("#");
-            }
-        }
-        return strb.toString();
+    private NumberFormat getNumberFormat(int precision) {
+        NumberFormat df = NumberFormat.getNumberInstance();
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setMaximumFractionDigits(precision);
+        df.setMinimumFractionDigits(0);
+        return df;
     }
 
-    private float getAmountInFarhenheit() {
+    private float getAmountInFahrenheit() {
         return (float) (((amount - KELVIN_CELCIUS_DIFFERENCE) * 1.8) + 32);
     }
 
@@ -93,11 +83,11 @@ public class Temperature implements Serializable {
 
     @Override
     public String toString() {
-        return getTemperature() + unit.getSymbol();
+        return toString(0);
     }
 
     public String toString(int precision) {
-        return getTemperature(precision) + unit.getSymbol();
+        return getTemperatureAmount(getNumberFormat(precision)) + unit.getSymbol();
     }
 
     public enum Unit {

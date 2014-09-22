@@ -1,6 +1,8 @@
 package com.sindrave.caelum;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.sindrave.caelum.domain.Forecast;
@@ -25,6 +28,7 @@ import java.util.Date;
 
 public class MainActivity extends Activity {
 
+    public static final String TAG = MainActivity.class.getName();
     private TextView textViewCurrentTemperature,textViewCurrentWeatherDescription;
     private ForecastReceiver receiver;
     private CitySetting citySetting;
@@ -39,24 +43,47 @@ public class MainActivity extends Activity {
         temperatureUnitSetting = new TemperatureUnitSetting(this);
 
         Temperature.setUnit(temperatureUnitSetting.getTemperatureUnit());
+        getWeather();
+    }
+
+    private void getWeather() {
         WeatherService.startActionCurrentWeather(this, citySetting.getCity());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.i(TAG, "Searched for: " + s);
+                citySetting.setCity(s);
+                searchItem.collapseActionView();
+                getWeather();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return true;
+            }
+        });
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(MainActivity.class.getName(), "Thread id: " + Thread.currentThread().getId());
+        Log.i(TAG, "Thread id: " + Thread.currentThread().getId());
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
                 return true;
             case R.id.action_refresh:
-                WeatherService.startActionCurrentWeather(this, citySetting.getCity());
+                getWeather();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -92,7 +119,7 @@ public class MainActivity extends Activity {
     }
 
     private void setCurrentTemperature(Temperature currentTemperature) {
-        getTextViewCurrentTemperature().setText(currentTemperature.toString(1));
+        getTextViewCurrentTemperature().setText(currentTemperature.toString());
     }
 
     private String capitalizeFirstCharacter(String string) {
