@@ -20,8 +20,9 @@ import java.net.URL;
 public class WeatherApi {
     private final static String OPEN_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s";
     public static final int HTTP_OK_RESPONSE_CODE = 200;
+    public static final String TAG = WeatherApi.class.getName();
 
-    private JSONObject getForecastDataForCity(String city) {
+    private String getForecastJsonStringForCity(String city) {
         String formattedUrlString = String.format(OPEN_WEATHER_API_URL, city);
         StringBuilder json = new StringBuilder();
         try {
@@ -31,22 +32,27 @@ public class WeatherApi {
                 json.append(bufferedJson).append("\n");
             }
             reader.close();
-            Log.d(WeatherApi.class.getName(), "Retrieved JSON String: " + json);
-            JSONObject data = new JSONObject(json.toString());
+            Log.d(TAG, "Retrieved JSON String: " + json);
+            return json.toString();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Malformed URL: " + formattedUrlString, e);
+            return null;
+        } catch (IOException e) {
+            Log.e(TAG, "unable to open connection to URL: " + formattedUrlString, e);
+            return null;
+        }
+    }
 
+    private JSONObject parseToJsonObject(String jsonData) {
+        try {
+            JSONObject data = new JSONObject(jsonData);
             if (data.getInt("cod") != HTTP_OK_RESPONSE_CODE) {
-                Log.w(WeatherApi.class.getName(), "The service returned a non-OK HTTP response");
+                Log.w(TAG, "The service returned a non-OK HTTP response");
                 return null;
             }
             return data;
-        } catch (MalformedURLException e) {
-            Log.e(WeatherApi.class.getName(), "Malformed URL: " + formattedUrlString, e);
-            return null;
-        } catch (IOException e) {
-            Log.e(WeatherApi.class.getName(), "unable to open connection to URL: " + formattedUrlString, e);
-            return null;
         } catch (JSONException e) {
-            Log.e(WeatherApi.class.getName(), "Error parsing json: " + json.toString());
+            Log.e(TAG, "Error trying to parse json: " + jsonData);
             return null;
         }
     }
@@ -59,10 +65,11 @@ public class WeatherApi {
 
     public Forecast getForecast(String city){
         try {
-            JSONObject forecastDataForCityJson = getForecastDataForCity(city);
-            return OpenWeatherApiParser.parseForecastFromJson(forecastDataForCityJson);
+            String forecastJson = getForecastJsonStringForCity(city);
+            JSONObject forecastDataForCity = parseToJsonObject(forecastJson);
+            return OpenWeatherApiParser.parseForecastFromJson(forecastDataForCity);
         } catch (Exception e) {
-            Log.e(WeatherApi.class.getName(), "Error parsing the json response", e);
+            Log.e(TAG, "Error parsing the json response", e);
             return null;
         }
     }

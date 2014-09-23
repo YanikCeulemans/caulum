@@ -10,19 +10,19 @@
     </style>
 
     <style name="WhiteText.Small">
-        <item name="android:textSize">9sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="WhiteText.Medium">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="WhiteText.Large">
-        <item name="android:textSize">35sp</item>
+        <item name="android:textSize">45sp</item>
     </style>
 
     <style name="WhiteText.WeatherIcon">
-        <item name="android:textSize">90sp</item>
+        <item name="android:textSize">120sp</item>
     </style>
 </resources>

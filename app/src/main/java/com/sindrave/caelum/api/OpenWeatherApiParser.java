@@ -19,6 +19,7 @@ import org.json.JSONObject;
 public class OpenWeatherApiParser {
 
     public static Forecast parseForecastFromJson(JSONObject data) {
+        if (data == null) return null;
         try {
             Coords location = getLocationFromJson(data);
             String locationName = getLocationNameFromJson(data);
