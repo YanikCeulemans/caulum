@@ -9,6 +9,7 @@ import android.util.Log;
 import com.sindrave.caelum.MainActivity;
 import com.sindrave.caelum.api.WeatherApi;
 import com.sindrave.caelum.domain.Forecast;
+import com.sindrave.caelum.infrastructure.Cache;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -34,8 +35,10 @@ public class WeatherService extends IntentService {
     private static final String ACTION_CURRENT_WEATHER = "com.sindrave.caelum.action.CURRENT_WEATHER";
     private static final String EXTRA_LOCATION_CITY = "com.sindrave.caelum.extra.LOCATION_CITY";
     private static final String CACHE_DATA_DATE = "CACHE_DATA_DATE";
-    public static final int HOUR_IN_MILLIS = (1000 * 60 * 60);
+    private static final String CACHE_FILE_NAME = "forecastcache";
+    private static final int HOUR_IN_MILLIS = (1000 * 60 * 60);
     private static SharedPreferences preferences;
+    private static Cache cache;
 
     public WeatherService() {
         super("WeatherService");
@@ -46,6 +49,7 @@ public class WeatherService extends IntentService {
         intent.setAction(ACTION_CURRENT_WEATHER);
         intent.putExtra(EXTRA_LOCATION_CITY, city);
         preferences = context.getSharedPreferences(CACHE_DATA, MODE_PRIVATE);
+        cache = new Cache(context);
         context.startService(intent);
     }
 
@@ -66,109 +70,31 @@ public class WeatherService extends IntentService {
         long lastCacheTime = preferences.getLong(CACHE_DATA_DATE, 0);
         long now = new Date().getTime();
         Forecast forecast = null;
-        if (lastCacheTime != 0 && now - lastCacheTime < HOUR_IN_MILLIS) {
-            forecast = readForecastFromCache();
+        boolean lastCacheTimeShorterThanXTimeAgo = lastCacheTime != 0 && now - lastCacheTime < HOUR_IN_MILLIS;
+        if (lastCacheTimeShorterThanXTimeAgo) {
+            try {
+                forecast = (Forecast) cache.get(CACHE_FILE_NAME);
+                Log.i(TAG, "Fetched forecast data from cache: " + forecast.toString());
+            } catch (IOException e) { // TODO: Exception handling
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
         }else {
             forecast = wapi.getForecast(city);
             preferences.edit().putLong(CACHE_DATA_DATE, new Date().getTime()).apply();
-            saveForecastToCache(forecast);
+            try {
+                cache.save(CACHE_FILE_NAME, forecast);
+            } catch (IOException e) { // TODO: Exception handling
+                e.printStackTrace();
+            }
         }
         if (forecast != null) {
             broadcastForecast(forecast);
         } else {
             Log.w(TAG, "No forecast data received");
-        }
-    }
-
-    private void saveForecastToCache(Forecast forecast) {
-        File cacheDir = getCacheDir();
-        File forecastCache = new File(cacheDir, "forecastcache");
-        OutputStream os = null;
-        try {
-            os = new BufferedOutputStream(new FileOutputStream(forecastCache));
-            byte[] forecastBytes = toBytes(forecast);
-            os.write(forecastBytes);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace(); // TODO exceptions
-        } catch (IOException e) {
-            e.printStackTrace(); // TODO: exceptions (an error occurred while writing to the stream)
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private byte[] toBytes(Forecast forecast) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(forecast);
-            return bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace(); // TODO: Exception
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
-        return null;
-    }
-
-    private Forecast readForecastFromCache() {
-        File cacheDir = getCacheDir();
-        File cachedForecast = new File(cacheDir, "forecastcache");
-        byte[] fileData = new byte[(int) cachedForecast.length()];
-        DataInputStream is = null;
-        try {
-            is = new DataInputStream(new FileInputStream(cachedForecast));
-            is.readFully(fileData);
-            Forecast forecast = (Forecast) fromBytes(fileData);
-            Log.i(TAG, "Deserialized from cache: " + forecast.toString());
-            return forecast;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-        return null;
-    }
-
-    private Object fromBytes(byte[] forecastBytes) {
-        ByteArrayInputStream in = new ByteArrayInputStream(forecastBytes);
-        try {
-            ObjectInputStream is = new ObjectInputStream(in);
-            return is.readObject();
-        } catch (IOException e) {
-            e.printStackTrace(); // no bytes found
-            return null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            Log.e(TAG, "Could not find one or more classes in the object graph", e);
-            return null;
         }
     }
 
