@@ -2,8 +2,8 @@ package com.sindrave.caelum.api;
 
 import android.util.Log;
 
-import com.sindrave.caelum.domain.Coords;
 import com.sindrave.caelum.domain.Forecast;
+import com.sindrave.caelum.domain.Location;
 import com.sindrave.caelum.domain.SunCycle;
 import com.sindrave.caelum.domain.Temperature;
 import com.sindrave.caelum.domain.TemperatureForecast;
@@ -21,22 +21,17 @@ public class OpenWeatherApiParser {
     public static Forecast parseForecastFromJson(JSONObject data) {
         if (data == null) return null;
         try {
-            Coords location = getLocationFromJson(data);
-            String locationName = getLocationNameFromJson(data);
+            Location location = getLocationFromJson(data);
             SunCycle sunCycle = getSunCycleFromJson(data);
             JSONObject mainJsonObject = data.getJSONObject("main");
             Weather weather = getWeatherFromJson(data, mainJsonObject);
             TemperatureForecast tempForecast = getTemperatureForecastFromJson(mainJsonObject);
             long date = data.getLong("dt");
-            return new Forecast(location, locationName, sunCycle, weather, tempForecast, date);
+            return new Forecast(location, sunCycle, weather, tempForecast, date);
         } catch (JSONException e) {
             Log.e(OpenWeatherApiParser.class.getName(), "Error occurred while parsing JSON", e);
             return null;
         }
-    }
-
-    private static String getLocationNameFromJson(JSONObject data) throws JSONException {
-        return data.getString("name");
     }
 
     private static TemperatureForecast getTemperatureForecastFromJson(JSONObject mainJsonObject) throws JSONException {
@@ -82,8 +77,11 @@ public class OpenWeatherApiParser {
         return new SunCycle(sysObject.getLong("sunrise"), sysObject.getLong("sunset"));
     }
 
-    private static Coords getLocationFromJson(JSONObject data) throws JSONException {
+    private static Location getLocationFromJson(JSONObject data) throws JSONException {
         JSONObject jsonCoords = data.getJSONObject("coord");
-        return new Coords((float) jsonCoords.getDouble("lon"), (float) jsonCoords.getDouble("lat"));
+        String name = data.getString("name");
+        float longitude = (float) jsonCoords.getDouble("lon");
+        float latitude = (float) jsonCoords.getDouble("lat");
+        return new Location(name, longitude, latitude);
     }
 }

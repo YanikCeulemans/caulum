@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
             setCurrentWeatherDescription(forecast.getWeather().getShortCurrentWeatherDescription());
             setWeatherIcon(forecast.getWeather().getWeatherType());
             setRequestDate(forecast.getRequestDate());
-            setLocation(forecast.getLocationName());
+            setLocation(forecast.getLocation().getName());
         }
     }
 }

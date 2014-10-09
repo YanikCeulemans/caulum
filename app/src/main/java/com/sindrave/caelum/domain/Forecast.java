@@ -8,34 +8,27 @@ import java.util.Date;
  */
 public class Forecast implements Serializable{
 
-    private final Coords location;
-    private final String locationName;
+    private final Location location;
     private final SunCycle sunCycle;
     private final Weather weather;
     private final TemperatureForecast temperatureForecast;
     private final Date requestDate;
 
     public Forecast
-            (Coords location,
-             String locationName,
+            (Location location,
              SunCycle sunCycle,
              Weather weather,
              TemperatureForecast temperatureForecast,
              long requestDate) {
         this.location = location;
-        this.locationName = locationName;
         this.sunCycle = sunCycle;
         this.weather = weather;
         this.temperatureForecast = temperatureForecast;
         this.requestDate = new Date(requestDate * 1000);
     }
 
-    public Coords getLocation() {
+    public Location getLocation() {
         return location;
-    }
-
-    public String getLocationName() {
-        return locationName;
     }
 
     public SunCycle getSunCycle() {
@@ -58,7 +51,6 @@ public class Forecast implements Serializable{
     public String toString() {
         return "Forecast{" +
                 "location=" + location +
-                ", locationName='" + locationName + '\'' +
                 ", sunCycle=" + sunCycle +
                 ", weather=" + weather +
                 ", temperatureForecast=" + temperatureForecast +
