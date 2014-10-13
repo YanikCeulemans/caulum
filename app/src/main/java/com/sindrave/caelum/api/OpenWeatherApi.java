@@ -72,6 +72,6 @@ public class OpenWeatherApi extends WeatherApi {
     protected Forecast getForecastCore(String city) {
         String forecastJson = getForecastJsonStringForCity(city);
         JSONObject forecastDataForCity = parseToJsonObject(forecastJson);
-        return OpenWeatherApiParser.parseForecastFromJson(forecastDataForCity);
+        return OpenWeatherApiParser.parseForecast(forecastDataForCity);
     }
 }

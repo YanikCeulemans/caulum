@@ -108,7 +108,7 @@ public class Temperature implements Serializable {
                     symbol = 'F';
                     break;
                 default:
-                    throw new UnsupportedOperationException("Uknown unit: + " + this.toString() + ", please add symbol case");
+                    throw new UnsupportedOperationException("Unknown unit: + " + this.toString() + ", please add symbol case");
             }
             return "°" + symbol;
         }

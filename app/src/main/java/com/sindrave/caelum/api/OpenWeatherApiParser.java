@@ -18,14 +18,14 @@ import org.json.JSONObject;
  */
 public class OpenWeatherApiParser {
 
-    public static Forecast parseForecastFromJson(JSONObject data) {
+    public static Forecast parseForecast(JSONObject data) {
         if (data == null) return null;
         try {
-            Location location = getLocationFromJson(data);
-            SunCycle sunCycle = getSunCycleFromJson(data);
+            Location location = getLocation(data);
+            SunCycle sunCycle = getSunCycle(data);
             JSONObject mainJsonObject = data.getJSONObject("main");
-            Weather weather = getWeatherFromJson(data, mainJsonObject);
-            TemperatureForecast tempForecast = getTemperatureForecastFromJson(mainJsonObject);
+            Weather weather = getWeather(data, mainJsonObject);
+            TemperatureForecast tempForecast = getTemperatureForecast(mainJsonObject);
             long date = data.getLong("dt");
             return new Forecast(location, sunCycle, weather, tempForecast, date);
         } catch (JSONException e) {
@@ -34,14 +34,14 @@ public class OpenWeatherApiParser {
         }
     }
 
-    private static TemperatureForecast getTemperatureForecastFromJson(JSONObject mainJsonObject) throws JSONException {
+    private static TemperatureForecast getTemperatureForecast(JSONObject mainJsonObject) throws JSONException {
         Temperature currentTemperature = new Temperature((float) mainJsonObject.getDouble("temp"), Temperature.Unit.KELVIN);
         Temperature minimumTemperature = new Temperature((float) mainJsonObject.getDouble("temp_min"), Temperature.Unit.KELVIN);
         Temperature maximumTemperature = new Temperature((float) mainJsonObject.getDouble("temp_max"), Temperature.Unit.KELVIN);
         return new TemperatureForecast(currentTemperature, minimumTemperature, maximumTemperature);
     }
 
-    private static Weather getWeatherFromJson(JSONObject data, JSONObject mainJsonObject) throws JSONException {
+    private static Weather getWeather(JSONObject data, JSONObject mainJsonObject) throws JSONException {
         JSONObject firstWeatherJsonObject = (JSONObject) data.getJSONArray("weather").get(0);
         WeatherType weatherType = getWeatherType(firstWeatherJsonObject);
         return new Weather(mainJsonObject.getInt("pressure"), mainJsonObject.getInt("humidity"), firstWeatherJsonObject.getString("main"), firstWeatherJsonObject.getString("description"), weatherType);
@@ -72,12 +72,12 @@ public class OpenWeatherApiParser {
         }
     }
 
-    private static SunCycle getSunCycleFromJson(JSONObject data) throws JSONException {
+    private static SunCycle getSunCycle(JSONObject data) throws JSONException {
         JSONObject sysObject = data.getJSONObject("sys");
         return new SunCycle(sysObject.getLong("sunrise"), sysObject.getLong("sunset"));
     }
 
-    private static Location getLocationFromJson(JSONObject data) throws JSONException {
+    private static Location getLocation(JSONObject data) throws JSONException {
         JSONObject jsonCoords = data.getJSONObject("coord");
         String name = data.getString("name");
         float longitude = (float) jsonCoords.getDouble("lon");
